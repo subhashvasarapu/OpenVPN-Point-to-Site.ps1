@@ -1,5 +1,5 @@
 # OpenVPN-Point-to-Site.ps1
-<#Author   : Subhash Vasarapu
+Author   : Subhash Vasarapu
 
 
 #    Variables    #

@@ -4,10 +4,12 @@
 ###################
 #    Variables    #
 ###################
+
+```
 $CertLocation = 'C:\temp\VPN'
 $Cert = 'AndroidClient.pfx'
 $CertName = "$CertLocation$Cert"
-
+```
 
 ###############################################
 #    Create a self-signed root certificate    #

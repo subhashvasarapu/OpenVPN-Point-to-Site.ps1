@@ -1,9 +1,9 @@
 # OpenVPN-Point-to-Site.ps1
 <#Author   : Subhash Vasarapu
 
-###################
+
 #    Variables    #
-###################
+
 
 ```
 $CertLocation = 'C:\temp\VPN'
@@ -11,9 +11,9 @@ $Cert = 'AndroidClient.pfx'
 $CertName = "$CertLocation$Cert"
 ```
 
-###############################################
+
 #    Create a self-signed root certificate    #
-###############################################
+```
 if((Test-Path -Path $CertLocation -ErrorAction SilentlyContinue) -eq $false){
     mkdir $CertLocation
     cd $CertLocation
@@ -28,11 +28,11 @@ $cert = New-SelfSignedCertificate -Type Custom -KeySpec Signature `
     -KeyLength 2048 `
     -CertStoreLocation "Cert:\CurrentUser\My" `
     -KeyUsageProperty Sign -KeyUsage CertSign
+```
 
 
-#######################################
 #    Generate a client certificate    #
-#######################################
+```
 New-SelfSignedCertificate `
     -Type Custom `
     -DnsName P2SChildCert `
@@ -44,11 +44,11 @@ New-SelfSignedCertificate `
     -CertStoreLocation "Cert:\CurrentUser\My" `
     -Signer $cert `
     -TextExtension @("2.5.29.37={text}1.3.6.1.5.5.7.3.2")
-    
+ ```   
 
-#############################
+
 #    Export Certificates    #
-#############################
+```
 $RootCert = (Get-ChildItem `
     -Path "Cert:\CurrentUser\My\"`
     | Where-Object `
@@ -79,10 +79,10 @@ Export-PfxCertificate `
     -Password $SecurePassword `
     -Cert $ExportPrivateCertPath
     
+```
 
-#####################################
 #    Add OpenSSL to  System Path    #
-#####################################
+```
 if (-not (Test-Path $profile)) {
     New-Item -Path $profile -ItemType File -Force
 }
@@ -90,11 +90,11 @@ if (-not (Test-Path $profile)) {
 '$env:path = "C:\Program Files\OpenSSL\bin"' | Out-File $profile -Append
 '$env:OPENSSL_CONF = "C:\temp\VPN\openssl.cnf"' | out-file $profile -Append
 . $profile
+```
 
 
-############################
 #    Install Chocolatey    #
-############################
+```
 Set-ExecutionPolicy Bypass `
     -Scope Process `
     -Force; `
@@ -102,20 +102,21 @@ Set-ExecutionPolicy Bypass `
         'https://chocolatey.org/install.ps1'
         )
     )
+```
 
 
-##########################
 #    Download OpenSSL    #
-##########################
+```
 choco install OpenSSL.Light -y --force
 Invoke-WebRequest `
     -Uri 'http://web.mit.edu/crypto/openssl.cnf' `
     -OutFile "$CertLocation\openssl.cnf"
+```
 
 
-#############################
 #    Extract Private Key    #
-#############################
+```
 . $profile
 $OpenSSLArgs = "pkcs12 -in C:\temp\vpn\AndroidClient.pfx -nodes -out c:\temp\vpn\profileinfo.txt"
 Start-Process openssl $OpenSSLArgs
+```
